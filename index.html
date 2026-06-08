@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Montero360 v14</title>
+<title>Montero360 v15</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07080d;--surface:#111420;--surface2:#171b2e;--surface3:#1e2340;--border:#1f2540;--border2:#2a3055;--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--blue:#3d7aed;--cyan:#00d4ff;--green:#00e5a0;--red:#ff4060;--orange:#ff8c42;--purple:#9b6dff;--text:#e8eaf5;--text2:#7a85b0;--text3:#3d4570;--radius:14px;--radius-sm:8px}
@@ -537,11 +537,7 @@ async function load(){
   console.log("LOAD DONE chamados:",chamados.length,"ocorrs:",ocorrs.length,"ideias:",ideias.length);
 }
 
-async function load(){
-  try{const r=await window.storage.get("m360c");if(r)chamados=JSON.parse(r.value);}catch(e){chamados=[];}
-  try{const r=await window.storage.get("m360o");if(r)ocorrs=JSON.parse(r.value);}catch(e){ocorrs=[];}
-  try{const r=await window.storage.get("m360i");if(r)ideias=JSON.parse(r.value);}catch(e){ideias=[];}
-}
+
 
 
 
