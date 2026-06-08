@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Montero360 v13</title>
+<title>Montero360 v14</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07080d;--surface:#111420;--surface2:#171b2e;--surface3:#1e2340;--border:#1f2540;--border2:#2a3055;--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--blue:#3d7aed;--cyan:#00d4ff;--green:#00e5a0;--red:#ff4060;--orange:#ff8c42;--purple:#9b6dff;--text:#e8eaf5;--text2:#7a85b0;--text3:#3d4570;--radius:14px;--radius-sm:8px}
@@ -514,34 +514,27 @@ async function sI(ideia){
 }
 
 async function load(){
-  console.log("LOAD INICIADO");
-  var H = {"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY};
-  var BURL = SUPA_URL+"/rest/v1/";
+  console.log("LOAD v14 START");
+  var H={"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY};
+  var base=SUPA_URL+"/rest/v1/";
   try{
-    console.log("buscando chamados...");
-    var r1 = await fetch(BURL+"chamados?order=criado_em.desc",{headers:H});
-    console.log("chamados status:", r1.status);
-    var d1 = await r1.json();
-    console.log("chamados count:", Array.isArray(d1)?d1.length:typeof d1);
-    if(Array.isArray(d1)){
-      chamados = d1.map(function(c){return {id:c.id,tipo:c.tipo,prio:c.prio,local:c.local,bloco:c.bloco,apto:c.apto,area:c.area,desc:c.descricao,forn:c.forn,atrib:c.atrib,status:c.status,foto:c.foto,criadoEm:c.criado_em};});
-    } else { chamados = []; }
-  }catch(e){console.error("ERRO chamados:",e.message);chamados=[];}
+    var r1=await fetch(base+"chamados?order=criado_em.desc",{headers:H});
+    console.log("chamados status:",r1.status);
+    var d1=await r1.json();
+    console.log("chamados raw:",Array.isArray(d1)?d1.length:typeof d1);
+    chamados=Array.isArray(d1)?d1.map(function(c){return{id:c.id,tipo:c.tipo,prio:c.prio,local:c.local,bloco:c.bloco,apto:c.apto,area:c.area,desc:c.descricao,forn:c.forn,atrib:c.atrib,status:c.status,foto:c.foto,criadoEm:c.criado_em};}):[];
+  }catch(e){console.error("chamados ERR:",e.message);chamados=[];}
   try{
-    var r2 = await fetch(BURL+"ocorrencias?order=criado_em.desc",{headers:H});
-    var d2 = await r2.json();
-    if(Array.isArray(d2)){
-      ocorrs = d2.map(function(o){return {id:o.id,bloco:o.bloco,apto:o.apto,dataOcorr:o.data_ocorr,dataReg:o.data_reg,categoria:o.categoria,acao:o.acao,multa:o.multa,desc:o.descricao,nota:o.nota,foto:o.foto,status:o.status,juridico:o.juridico,dataJuridico:o.data_juridico,criadoEm:o.criado_em};});
-    } else { ocorrs = []; }
-  }catch(e){console.error("ERRO ocorrs:",e.message);ocorrs=[];}
+    var r2=await fetch(base+"ocorrencias?order=criado_em.desc",{headers:H});
+    var d2=await r2.json();
+    ocorrs=Array.isArray(d2)?d2.map(function(o){return{id:o.id,bloco:o.bloco,apto:o.apto,dataOcorr:o.data_ocorr,dataReg:o.data_reg,categoria:o.categoria,acao:o.acao,multa:o.multa,desc:o.descricao,nota:o.nota,foto:o.foto,status:o.status,juridico:o.juridico,dataJuridico:o.data_juridico,criadoEm:o.criado_em};}):[];
+  }catch(e){console.error("ocorrs ERR:",e.message);ocorrs=[];}
   try{
-    var r3 = await fetch(BURL+"ideias?order=criado_em.desc",{headers:H});
-    var d3 = await r3.json();
-    if(Array.isArray(d3)){
-      ideias = d3.map(function(i){return {id:i.id,text:i.texto,cat:i.categoria,ai:i.ai_expansao,arch:i.arquivada,criadoEm:i.criado_em};});
-    } else { ideias = []; }
-  }catch(e){console.error("ERRO ideias:",e.message);ideias=[];}
-  console.log("LOAD COMPLETO — chamados:",chamados.length,"ocorrs:",ocorrs.length,"ideias:",ideias.length);
+    var r3=await fetch(base+"ideias?order=criado_em.desc",{headers:H});
+    var d3=await r3.json();
+    ideias=Array.isArray(d3)?d3.map(function(i){return{id:i.id,text:i.texto,cat:i.categoria,ai:i.ai_expansao,arch:i.arquivada,criadoEm:i.criado_em};}):[];
+  }catch(e){console.error("ideias ERR:",e.message);ideias=[];}
+  console.log("LOAD DONE chamados:",chamados.length,"ocorrs:",ocorrs.length,"ideias:",ideias.length);
 }
 
 async function load(){
