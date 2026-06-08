@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Montero360 v15</title>
+<title>Montero360</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07080d;--surface:#111420;--surface2:#171b2e;--surface3:#1e2340;--border:#1f2540;--border2:#2a3055;--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--blue:#3d7aed;--cyan:#00d4ff;--green:#00e5a0;--red:#ff4060;--orange:#ff8c42;--purple:#9b6dff;--text:#e8eaf5;--text2:#7a85b0;--text3:#3d4570;--radius:14px;--radius-sm:8px}
@@ -462,7 +462,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellips
 <script>
 
 // Global state
-let CU=null,chamados=[],ocorrs=[],ideias=[],filterCham="todos",filterOcorr="todas",filterIdeia="todas",showCA=false,showIA=false,oFoto=null;
+let CU=null,chamados=[],ocorrs=[],ideias=[],fC="todos",fO="todas",fI="todas",filterCham="todos",filterOcorr="todas",filterIdeia="todas",showCA=false,showIA=false,oFoto=null;
 
 const SUPA_URL = "https://ccjjmwpzrbbduccfcbjn.supabase.co";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY";
@@ -514,14 +514,14 @@ async function sI(ideia){
 }
 
 async function load(){
-  console.log("LOAD v14 START");
+  
   var H={"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY};
   var base=SUPA_URL+"/rest/v1/";
   try{
     var r1=await fetch(base+"chamados?order=criado_em.desc",{headers:H});
-    console.log("chamados status:",r1.status);
+    
     var d1=await r1.json();
-    console.log("chamados raw:",Array.isArray(d1)?d1.length:typeof d1);
+    
     chamados=Array.isArray(d1)?d1.map(function(c){return{id:c.id,tipo:c.tipo,prio:c.prio,local:c.local,bloco:c.bloco,apto:c.apto,area:c.area,desc:c.descricao,forn:c.forn,atrib:c.atrib,status:c.status,foto:c.foto,criadoEm:c.criado_em};}):[];
   }catch(e){console.error("chamados ERR:",e.message);chamados=[];}
   try{
@@ -534,7 +534,7 @@ async function load(){
     var d3=await r3.json();
     ideias=Array.isArray(d3)?d3.map(function(i){return{id:i.id,text:i.texto,cat:i.categoria,ai:i.ai_expansao,arch:i.arquivada,criadoEm:i.criado_em};}):[];
   }catch(e){console.error("ideias ERR:",e.message);ideias=[];}
-  console.log("LOAD DONE chamados:",chamados.length,"ocorrs:",ocorrs.length,"ideias:",ideias.length);
+  
 }
 
 
@@ -1300,14 +1300,14 @@ async function init(){
   setDefaultDates();
   // Auto-login se tiver sessao salva
   const saved = localStorage.getItem("m360session");
-  console.log("session saved:", saved);
+  
   if(saved){
     try{
       const s = JSON.parse(saved);
-      console.log("auto-login para:", s.username);
+      
       const resp = await fetch("https://ccjjmwpzrbbduccfcbjn.supabase.co/rest/v1/usuarios?username=eq."+s.username+"&ativo=eq.true",{headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY"}});
       const r = await resp.json();
-      console.log("usuarios result:", r);
+      
       if(r&&r.length>0){
         const user=r[0];
         CU={username:user.username,role:user.role,label:user.label,tabs:[],canCham:user.pode_abrir_chamado,canOcorr:user.role==="sindico",acesso_painel:user.acesso_painel,acesso_chamados:user.acesso_chamados,acesso_ocorrencias:user.acesso_ocorrencias,acesso_ideias:user.acesso_ideias};
@@ -1321,9 +1321,9 @@ async function init(){
         document.getElementById("app").style.display="block";
         document.getElementById("userBadge").textContent=CU.label;
         applyRole();
-        console.log("carregando dados...");
+        
         await load();
-        console.log("dados carregados, chamados:", chamados.length);
+        
         setDefaultDates();
         renderAll();
       }else{console.error("usuario nao encontrado ou inativo");localStorage.removeItem("m360session");}
