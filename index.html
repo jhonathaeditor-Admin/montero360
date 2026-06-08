@@ -221,10 +221,10 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellips
   <!-- DASHBOARD -->
   <div id="tab-dashboard" class="content tab-pane active">
     <div class="stats-grid">
-      <div class="stat-card" style="--sc:var(--gold)"><div class="stat-num" id="dT">0</div><div class="stat-label">Chamados</div></div>
-      <div class="stat-card" style="--sc:var(--red)"><div class="stat-num" id="dU">0</div><div class="stat-label">Urgentes</div></div>
-      <div class="stat-card" style="--sc:var(--orange)"><div class="stat-num" id="dA">0</div><div class="stat-label">Em aberto</div></div>
-      <div class="stat-card" style="--sc:var(--green)"><div class="stat-num" id="dC">0</div><div class="stat-label">Concluidos</div></div>
+      <div class="stat-card" style="--sc:var(--gold);cursor:pointer" onclick="switchTab('chamados',document.getElementById('tab-btn-chamados'));setFC('todos',document.querySelector('.filter-chip[data-f=todos]'))"><div class="stat-num" id="dT">0</div><div class="stat-label">Chamados</div></div>
+      <div class="stat-card" style="--sc:var(--red);cursor:pointer" onclick="switchTab('chamados',document.getElementById('tab-btn-chamados'));setFC('Urgente',document.querySelector('.filter-chip[data-f=Urgente]'))"><div class="stat-num" id="dU">0</div><div class="stat-label">Urgentes</div></div>
+      <div class="stat-card" style="--sc:var(--orange);cursor:pointer" onclick="switchTab('chamados',document.getElementById('tab-btn-chamados'));setFC('Aberto',document.querySelector('.filter-chip[data-f=Aberto]'))"><div class="stat-num" id="dA">0</div><div class="stat-label">Em aberto</div></div>
+      <div class="stat-card" style="--sc:var(--green);cursor:pointer" onclick="switchTab('chamados',document.getElementById('tab-btn-chamados'));togChamArch()"><div class="stat-num" id="dC">0</div><div class="stat-label">Concluidos</div></div>
     </div>
     <div class="section-title">Chamados urgentes e abertos</div>
     <div class="list-stack" id="dashList"></div>
@@ -648,6 +648,18 @@ async function salvarChamado(){
   document.getElementById("cDesc").value="";document.getElementById("cArea").value="";
   renderAll();showToast("Chamado aberto");
 }
+
+async function deleteChamado(id){
+  if(!confirm("Tem certeza que deseja deletar este chamado? Esta acao nao pode ser desfeita."))return;
+  try{
+    var H={"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"Content-Type":"application/json"};
+    await fetch(SUPA_URL+"/rest/v1/chamados?id=eq."+id,{method:"DELETE",headers:H});
+    chamados=chamados.filter(function(c){return c.id!==id;});
+    renderAll();
+    showToast("Chamado deletado!");
+  }catch(e){showToast("Erro ao deletar chamado.");}
+}
+
 async function updChamStatus(id,s){const c=chamados.find(x=>x.id===id);if(c){c.status=s;await sC(c);renderAll();showToast("Status: "+s);}}
 async function upChamFoto(id,file){if(!file)return;const r=new FileReader();r.onload=async e=>{const c=chamados.find(x=>x.id===id);if(c){c.foto=e.target.result;await sC(c);renderAll();showToast("Foto salva!");}};r.readAsDataURL(file);}
 
@@ -669,6 +681,10 @@ function chamCard(c,dash=false){
     <div class="card-meta"><span>📍 ${esc(loc)}</span>${c.forn?`<span>🤝 ${esc(c.forn)}</span>`:""}<span>🕐 ${dt}</span></div>
     ${c.foto?`<div class="photo-thumb" onclick="openPM('${c.foto}')"><img src="${c.foto}" alt="Foto"></div>`:""}
     ${isZel&&c.atrib==="Zeladora"&&!c.foto?`<div class="photo-upload" onclick="document.getElementById('cf${c.id}').click()">Adicionar foto da execucao<input type="file" id="cf${c.id}" accept="image/*" onchange="upChamFoto(${c.id},this.files[0])"></div>`:""}
+    ${isSind?`<div style="margin-top:8px;display:flex;gap:8px">
+      ${c.status!=="Concluido"?`<button onclick="updChamStatus(${c.id},'Concluido')" class="btn-secondary" style="font-size:11px;padding:5px 12px;color:var(--green);border-color:var(--green)33">✓ Concluir</button>`:""}
+      <button onclick="deleteChamado(${c.id})" class="btn-secondary" style="font-size:11px;padding:5px 12px;color:var(--red);border-color:var(--red)33">🗑 Deletar</button>
+    </div>`:""}
   </div>`;
 }
 function renderCham(){
@@ -792,7 +808,7 @@ function renderHist(){
 
 function setFI(f,el){fI=f;document.querySelectorAll(".filter-chip[data-fi]").forEach(b=>b.classList.remove("active"));if(el)el.classList.add("active");renderIdeias();}
 function autoIC(t){const l=t.toLowerCase();for(const[cat,keys]of Object.entries(IKEYS)){if(keys.some(k=>l.includes(k)))return cat;}return "Outros";}
-const ANTHROPIC_KEY="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";async function callAI(p){const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:p}]})}); if(!res.ok){throw new Error("API error: "+res.status);}const d=await res.json();return d.content?.map(b=>b.text||"").join("")||"";}
+const ANTHROPIC_KEY="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";async function callAI(p){const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:p}]})});if(!res.ok){const e=await res.text();throw new Error("API "+res.status+": "+e.substring(0,100));}const d=await res.json();return d.content?.map(function(b){return b.text||""}).join("")||"";}
 async function salvarIdeia(){
   const inp=document.getElementById("ideiaIn");const text=inp.value.trim();if(!text)return;
   const btn=document.getElementById("btnIdeia");btn.disabled=true;btn.innerHTML="<span class=\"loading-dots\"><span>·</span><span>·</span><span>·</span></span>";
