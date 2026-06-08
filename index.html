@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Montero360 v11</title>
+<title>Montero360 v12</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07080d;--surface:#111420;--surface2:#171b2e;--surface3:#1e2340;--border:#1f2540;--border2:#2a3055;--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--blue:#3d7aed;--cyan:#00d4ff;--green:#00e5a0;--red:#ff4060;--orange:#ff8c42;--purple:#9b6dff;--text:#e8eaf5;--text2:#7a85b0;--text3:#3d4570;--radius:14px;--radius-sm:8px}
@@ -460,6 +460,9 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellips
 <div class="toast" id="toast"></div>
 
 <script>
+
+// Global state
+let CU=null,chamados=[],ocorrs=[],ideias=[],filterCham="todos",filterOcorr="todas",filterIdeia="todas",showCA=false,showIA=false,oFoto=null;
 
 const SUPA_URL = "https://ccjjmwpzrbbduccfcbjn.supabase.co";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY";
