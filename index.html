@@ -1,0 +1,1345 @@
+<!DOCTYPE html><!-- VERSAO 11 -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Montero360 v11</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080d;--surface:#111420;--surface2:#171b2e;--surface3:#1e2340;--border:#1f2540;--border2:#2a3055;--gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);--blue:#3d7aed;--cyan:#00d4ff;--green:#00e5a0;--red:#ff4060;--orange:#ff8c42;--purple:#9b6dff;--text:#e8eaf5;--text2:#7a85b0;--text3:#3d4570;--radius:14px;--radius-sm:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Outfit",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 20% 0%,rgba(61,122,237,0.07) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 80% 100%,rgba(201,168,76,0.05) 0%,transparent 60%);pointer-events:none;z-index:0}
+#loginScreen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:24px}
+.login-box{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:40px 32px;box-shadow:0 32px 80px rgba(0,0,0,0.6);animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo-mark{width:56px;height:56px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;box-shadow:0 0 32px rgba(201,168,76,0.3)}
+.login-title{font-size:22px;font-weight:800;letter-spacing:-.5px}.login-title span{color:var(--gold)}
+.login-sub{font-size:12px;color:var(--text3);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+.field-group{margin-bottom:16px}
+.field-label{font-size:11px;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;display:block}
+.field-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:"Outfit",sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.field-input:focus{border-color:var(--gold)}.field-input::placeholder{color:var(--text3)}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07080d;border:none;border-radius:var(--radius-sm);padding:13px;font-family:"Outfit",sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;margin-top:8px}
+.btn-login:hover{opacity:.9;transform:translateY(-1px)}
+.login-error{color:var(--red);font-size:12px;text-align:center;margin-top:10px;display:none}
+#app{display:none;position:relative;z-index:1}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(7,8,13,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.topbar-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.topbar-name{font-size:17px;font-weight:800;letter-spacing:-.3px}.topbar-name span{color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-badge{font-size:11px;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px}
+.btn-logout{background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text3);font-size:12px;padding:5px 10px;cursor:pointer;font-family:"Outfit",sans-serif;transition:all .15s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+.nav-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;padding:0 16px}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:13px 16px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:5px}
+.nav-tab:hover{color:var(--text2)}.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.content{padding:20px 20px 100px;max-width:760px;margin:0 auto}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+@media(min-width:500px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--sc,var(--gold))}
+.stat-num{font-size:28px;font-weight:800;color:var(--sc,var(--gold));line-height:1;margin-bottom:4px}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px}
+.form-title{font-size:15px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-grid{display:grid;gap:14px}.form-grid-2{grid-template-columns:1fr 1fr}
+@media(max-width:480px){.form-grid-2{grid-template-columns:1fr}}
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:11px;color:var(--text2);letter-spacing:.5px;text-transform:uppercase}
+.form-input,.form-select,.form-textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);font-family:"Outfit",sans-serif;font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)}
+.form-select option{background:var(--surface2)}.form-textarea{resize:none;min-height:80px;line-height:1.5}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07080d;border:none;border-radius:var(--radius-sm);padding:12px 24px;font-family:"Outfit",sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;display:flex;align-items:center;gap:8px}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;font-family:"Outfit",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-secondary:hover{border-color:var(--border2);color:var(--text)}
+.filter-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:16px}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 13px;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s}
+.filter-chip:hover{border-color:var(--border2);color:var(--text)}
+.filter-chip.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+.search-wrap{position:relative;margin-bottom:16px}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px 11px 40px;color:var(--text);font-family:"Outfit",sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--text3)}.search-wrap input::placeholder{color:var(--text3)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3)}
+.list-stack{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .2s,transform .15s;animation:slideIn .25s ease;position:relative;overflow:hidden}
+.card:hover{border-color:var(--border2);transform:translateY(-1px)}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card-accent{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--border2))}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.4px;text-transform:uppercase;border:1px solid transparent}
+.card-actions{display:flex;gap:4px;flex-shrink:0}
+.icon-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;padding:5px 7px;border-radius:6px;font-size:13px;transition:all .15s}
+.icon-btn:hover{color:var(--text);background:var(--surface2)}
+.card-body{font-size:14px;line-height:1.65;color:var(--text);margin-bottom:10px;word-break:break-word}
+.card-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--text3);font-family:"DM Mono",monospace}
+.inline-select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:"Outfit",sans-serif;font-size:11px;font-weight:600;padding:3px 8px;outline:none;cursor:pointer}
+.reincid-alert{background:rgba(255,64,96,0.08);border:1px solid rgba(255,64,96,0.3);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--red);display:none;align-items:center;gap:8px}
+.folha-btn{background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:not-allowed;font-size:13px;color:var(--text3);display:flex;align-items:center;justify-content:center;gap:8px;opacity:.6;margin-bottom:16px}
+.folha-badge{font-size:10px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:2px 8px;letter-spacing:.5px}
+.photo-upload{background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:13px;color:var(--text3)}
+.photo-upload:hover{border-color:var(--gold);color:var(--text2)}.photo-upload input{display:none}
+.photo-thumb{margin-top:8px;border-radius:8px;overflow:hidden;max-width:160px;cursor:pointer}
+.photo-thumb img{width:100%;display:block;border-radius:8px}
+.ai-response{margin-top:12px;padding:12px 14px;background:var(--surface2);border-left:2px solid var(--gold);border-radius:0 8px 8px 0;font-size:13px;line-height:1.75;color:var(--text2)}
+.ai-label{font-size:10px;color:var(--gold);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.arch-toggle{display:flex;align-items:center;gap:8px;margin:20px 0 12px;cursor:pointer;color:var(--text3);font-size:12px;user-select:none}
+.arch-toggle:hover{color:var(--text2)}
+.hist-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+.hist-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:520px;max-height:80vh;overflow-y:auto}
+.hist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.hist-title{font-size:16px;font-weight:700}
+.hist-close{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px}.hist-close:hover{color:var(--text)}
+.hist-reincid{background:rgba(255,64,96,0.1);border:1px solid rgba(255,64,96,0.3);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--red);font-weight:600}
+.photo-modal{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+.photo-modal img{max-width:100%;max-height:90vh;border-radius:10px}
+.empty{text-align:center;padding:48px 24px;color:var(--text3)}.empty-icon{font-size:40px;margin-bottom:12px}.empty p{font-size:13px;line-height:1.6}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--text);z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.loading-dots span{display:inline-block;animation:blink 1.2s infinite;font-size:16px;color:var(--gold)}
+.loading-dots span:nth-child(2){animation-delay:.2s}.loading-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.user-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;animation:slideIn .25s ease}
+.user-card.inactive{opacity:.5}
+.user-info{display:flex;flex-direction:column;gap:4px}
+.user-name{font-size:15px;font-weight:700}
+.user-meta{font-size:11px;color:var(--text3);font-family:"DM Mono",monospace}
+.user-perms{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.user-actions{display:flex;gap:8px;flex-wrap:wrap}
+.toggle-switch{position:relative;width:44px;height:24px;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--surface3);border-radius:24px;transition:.3s}
+.toggle-slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s}
+.toggle-switch input:checked + .toggle-slider{background:var(--green)}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px)}
+.edit-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+.edit-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.edit-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.edit-title{font-size:16px;font-weight:700}
+.edit-close{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px}
+.edit-close:hover{color:var(--text)}
+
+
+/* VOICE ASSISTANT */
+.voice-fab{position:fixed;bottom:28px;right:20px;z-index:500;width:56px;height:56px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 20px rgba(201,168,76,0.5);transition:transform .2s,box-shadow .2s}
+.voice-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(201,168,76,0.6)}
+.voice-fab.listening{animation:pulse-fab 1.2s infinite}
+@keyframes pulse-fab{0%,100%{box-shadow:0 4px 20px rgba(201,168,76,0.5)}50%{box-shadow:0 0 0 12px rgba(201,168,76,0.15),0 4px 20px rgba(201,168,76,0.5)}}
+
+.va-modal{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;justify-content:center;padding:0;animation:fadeIn .2s ease}
+.va-box{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:600px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.va-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.va-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.va-close{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px}.va-close:hover{color:var(--text)}
+.va-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.va-msg{max-width:85%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;animation:fadeIn .2s ease}
+.va-msg.ai{background:var(--surface2);color:var(--text);border-radius:4px 16px 16px 16px;align-self:flex-start}
+.va-msg.user{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07080d;border-radius:16px 4px 16px 16px;align-self:flex-end;font-weight:500}
+.va-msg.system{background:rgba(0,229,160,0.1);color:var(--green);border:1px solid rgba(0,229,160,0.2);border-radius:10px;align-self:center;font-size:12px;text-align:center}
+
+.va-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0}
+.va-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:24px;padding:11px 16px;color:var(--text);font-family:"Outfit",sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.va-input:focus{border-color:var(--gold)}
+.va-input::placeholder{color:var(--text3)}
+.va-send{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:50%;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:opacity .15s}
+.va-send:hover{opacity:.9}
+.va-mic{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:all .15s}
+.va-mic:hover{border-color:var(--gold)}
+.va-mic.active{background:rgba(255,64,96,0.15);border-color:var(--red);animation:pulse-mic .8s infinite}
+@keyframes pulse-mic{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+.va-review{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin:0 16px 12px}
+.va-review-title{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.va-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.va-field-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.va-field-val{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;font-family:"Outfit",sans-serif;width:100%}
+.va-field-val:focus{border-color:var(--gold)}
+.va-actions{display:flex;gap:8px;padding:0 16px 16px}
+.va-save{flex:1;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07080d;border:none;border-radius:10px;padding:12px;font-family:"Outfit",sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.va-save:hover{opacity:.9}
+.va-restart{background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-family:"Outfit",sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.va-restart:hover{border-color:var(--border2);color:var(--text)}
+.va-typing{display:flex;gap:4px;align-items:center;padding:8px 12px}
+.va-typing span{width:6px;height:6px;background:var(--text3);border-radius:50%;animation:typing .8s infinite}
+.va-typing span:nth-child(2){animation-delay:.15s}
+.va-typing span:nth-child(3){animation-delay:.3s}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+
+/* ASSISTENTE DE DESCRICAO */
+.field-with-ai{position:relative}
+.btn-improve{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07080d;border:none;border-radius:6px;padding:5px 12px;font-family:"Outfit",sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .15s;display:inline-flex;align-items:center;gap:4px;margin-top:6px}
+.btn-improve:hover{opacity:.85}
+.btn-improve:disabled{opacity:.4;cursor:not-allowed}
+.btn-improve.loading{opacity:.7}
+.improve-hint{font-size:10px;color:var(--text3);margin-top:4px;font-style:italic}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-mark">🏢</div>
+      <div class="login-title">Montero<span>360</span></div>
+      <div class="login-sub">Spazio Montero &middot; Gestao</div>
+    </div>
+    <div class="field-group"><label class="field-label">Usuario</label><input class="field-input" id="loginUser" type="text" placeholder="seu usuario" autocomplete="username"></div>
+    <div class="field-group"><label class="field-label">Senha</label><input class="field-input" id="loginPass" type="password" placeholder="..." autocomplete="current-password"></div>
+    <button class="btn-login" id="btnLogin" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="loginError">Usuario ou senha incorretos</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo"><div class="topbar-mark">🏢</div><div class="topbar-name">Montero<span>360</span></div></div>
+    <div class="topbar-right"><div class="user-badge" id="userBadge">-</div><button class="btn-logout" onclick="doLogout()">Sair</button></div>
+  </div>
+  <div class="nav-tabs" id="navTabs">
+    <div class="nav-tab active" id="tab-btn-dashboard" onclick="switchTab('dashboard',this)">📊 Painel</div>
+    <div class="nav-tab" id="tab-btn-chamados" onclick="switchTab('chamados',this)">🔧 Chamados</div>
+    <div class="nav-tab" id="tab-btn-ocorrencias" onclick="switchTab('ocorrencias',this)">📋 Ocorrencias</div>
+    <div class="nav-tab" id="tab-btn-ideias" onclick="switchTab('ideias',this)">💡 Ideias</div>
+    <div class="nav-tab" id="tab-btn-admin" onclick="switchTab('admin',this)">⚙️ Admin</div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard" class="content tab-pane active">
+    <div class="stats-grid">
+      <div class="stat-card" style="--sc:var(--gold)"><div class="stat-num" id="dT">0</div><div class="stat-label">Chamados</div></div>
+      <div class="stat-card" style="--sc:var(--red)"><div class="stat-num" id="dU">0</div><div class="stat-label">Urgentes</div></div>
+      <div class="stat-card" style="--sc:var(--orange)"><div class="stat-num" id="dA">0</div><div class="stat-label">Em aberto</div></div>
+      <div class="stat-card" style="--sc:var(--green)"><div class="stat-num" id="dC">0</div><div class="stat-label">Concluidos</div></div>
+    </div>
+    <div class="section-title">Chamados urgentes e abertos</div>
+    <div class="list-stack" id="dashList"></div>
+  </div>
+
+  <!-- CHAMADOS -->
+  <div id="tab-chamados" class="content tab-pane">
+    <div class="form-card" id="formChamWrap">
+      <div class="form-title">+ Novo Chamado</div>
+      <div class="form-grid">
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Tipo</label>
+            <select class="form-select" id="cTipo"><option value="Corretiva">Manut. Corretiva</option><option value="Preventiva">Manut. Preventiva</option><option value="Ocorrencia Informal">Ocorrencia Informal</option></select></div>
+          <div class="form-field"><label class="form-label">Prioridade</label>
+            <select class="form-select" id="cPrio"><option value="Normal">Normal</option><option value="Urgente">Urgente</option><option value="Baixa">Baixa</option></select></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Local</label>
+            <select class="form-select" id="cLocal" onchange="toggleCLocal()"><option value="area">Area Comum</option><option value="apto">Apartamento</option></select></div>
+          <div class="form-field" id="cBlocoW" style="display:none"><label class="form-label">Bloco</label>
+            <select class="form-select" id="cBloco"><option>Bloco 1</option><option>Bloco 2</option><option>Bloco 3</option><option>Bloco 4</option></select></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-field" id="cAptoW" style="display:none"><label class="form-label">Apartamento</label><input class="form-input" id="cApto" placeholder="Ex: 201"></div>
+          <div class="form-field"><label class="form-label">Area / Equipamento</label><input class="form-input" id="cArea" placeholder="Elevador, Piscina..."></div>
+        </div>
+        <div class="form-field field-with-ai"><label class="form-label">Descricao</label><textarea class="form-textarea" id="cDesc" placeholder="Descreva o problema..."></textarea><button class="btn-improve" id="btnImproveCham" onclick="improveText('cDesc','chamado')">✨ Melhorar com IA</button><div class="improve-hint" id="hintCham"></div></div>
+        <div class="form-grid form-grid-2" id="cSindFields">
+          <div class="form-field"><label class="form-label">Fornecedor</label><input class="form-input" id="cForn" placeholder="Nome do fornecedor"></div>
+          <div class="form-field"><label class="form-label">Atribuir a</label><select class="form-select" id="cAtrib"><option value="">Ninguem</option><option value="Zeladora">Zeladora</option></select></div>
+        </div>
+        <button class="btn-primary" id="btnCham" onclick="salvarChamado()"><span>Salvar Chamado</span></button>
+      </div>
+    </div>
+    <div class="filter-row" id="chamFilterRow">
+      <div class="filter-chip active" data-f="todos" onclick="setFC('todos',this)">Todos</div>
+      <div class="filter-chip" data-f="Urgente" onclick="setFC('Urgente',this)">Urgente</div>
+      <div class="filter-chip" data-f="Corretiva" onclick="setFC('Corretiva',this)">Corretiva</div>
+      <div class="filter-chip" data-f="Preventiva" onclick="setFC('Preventiva',this)">Preventiva</div>
+      <div class="filter-chip" data-f="Aberto" onclick="setFC('Aberto',this)">Aberto</div>
+    </div>
+    <div class="section-title">Chamados ativos</div>
+    <div class="list-stack" id="chamList"></div>
+    <div class="arch-toggle" id="chamArchTog" style="display:none" onclick="togChamArch()"><span id="chamArchArr">&#9654;</span><span id="chamArchLbl">Ver concluidos (0)</span></div>
+    <div class="list-stack" id="chamArchList" style="display:none;margin-top:10px"></div>
+  </div>
+
+  <!-- OCORRENCIAS -->
+  <div id="tab-ocorrencias" class="content tab-pane">
+    <div class="stats-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat-card" style="--sc:var(--orange)"><div class="stat-num" id="oT">0</div><div class="stat-label">Total</div></div>
+      <div class="stat-card" style="--sc:var(--red)"><div class="stat-num" id="oA">0</div><div class="stat-label">Em aberto</div></div>
+      <div class="stat-card" style="--sc:var(--purple)"><div class="stat-num" id="oJ">0</div><div class="stat-label">No Juridico</div></div>
+      <div class="stat-card" style="--sc:var(--green)"><div class="stat-num" id="oR">0</div><div class="stat-label">Resolvidas</div></div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-title">Registrar Ocorrencia</div>
+      <div class="folha-btn"><span>Importar Folha de Ocorrencia</span><span class="folha-badge">EM BREVE</span></div>
+      <div class="reincid-alert" id="reincidAlert"><span id="reincidMsg"></span></div>
+      <div class="form-grid">
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Bloco do Infrator</label>
+            <select class="form-select" id="oBloco"><option value="">Selecione</option><option>Bloco 1</option><option>Bloco 2</option><option>Bloco 3</option><option>Bloco 4</option></select></div>
+          <div class="form-field"><label class="form-label">Apartamento</label><input class="form-input" id="oApto" placeholder="Ex: 201" oninput="checkReincid()"></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Data da Ocorrencia</label><input class="form-input" id="oDataOcorr" type="datetime-local"></div>
+          <div class="form-field"><label class="form-label">Data do Registro</label><input class="form-input" id="oDataReg" type="datetime-local"></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Categoria</label>
+            <select class="form-select" id="oCat"><option value="Barulho">Barulho</option><option value="Animais">Animais</option><option value="Estacionamento">Estacionamento</option><option value="Conduta">Conduta</option><option value="Outros">Outros</option></select></div>
+          <div class="form-field"><label class="form-label">Acao Tomada</label>
+            <select class="form-select" id="oAcao" onchange="toggleMulta()"><option value="Aviso WhatsApp">Aviso WhatsApp</option><option value="Notificacao">Notificacao</option><option value="Multa">Multa</option></select></div>
+        </div>
+        <div class="form-field" id="oMultaW" style="display:none"><label class="form-label">Valor da Multa (R$)</label><input class="form-input" id="oMultaVal" type="number" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="form-field field-with-ai"><label class="form-label">Descricao / OBS para o Juridico</label><textarea class="form-textarea" id="oDesc" placeholder="Descreva a ocorrencia..."></textarea><button class="btn-improve" id="btnImproveOcorr" onclick="improveText('oDesc','ocorrencia')">✨ Melhorar com IA</button><div class="improve-hint" id="hintOcorr"></div></div>
+        <div class="form-field field-with-ai"><label class="form-label">Nota Interna (so voce ve)</label><textarea class="form-textarea" id="oNota" placeholder="Anotacoes pessoais..." style="min-height:60px"></textarea><button class="btn-improve" id="btnImproveNota" onclick="improveText('oNota','nota')">✨ Melhorar com IA</button><div class="improve-hint" id="hintNota"></div></div>
+        <div class="form-field">
+          <label class="form-label">Evidencia (foto)</label>
+          <div class="photo-upload" onclick="document.getElementById('oFotoIn').click()">Anexar foto ou print como evidencia<input type="file" id="oFotoIn" accept="image/*" onchange="prevOFoto(this)"></div>
+          <div id="oFotoPrev" style="display:none;margin-top:8px"><img id="oFotoImg" style="max-width:160px;border-radius:8px" src="" alt=""><button onclick="clearOFoto()" style="display:block;margin-top:4px;background:transparent;border:none;color:var(--red);font-size:12px;cursor:pointer">Remover foto</button></div>
+        </div>
+        <button class="btn-primary" id="btnOcorr" onclick="salvarOcorr()"><span>Registrar Ocorrencia</span></button>
+      </div>
+    </div>
+
+    <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Buscar por apartamento..." id="oSearch" oninput="renderOcorr()"></div>
+    <div class="filter-row">
+      <div class="filter-chip active" data-fo="todas" onclick="setFO('todas',this)">Todas</div>
+      <div class="filter-chip" data-fo="Barulho" onclick="setFO('Barulho',this)">Barulho</div>
+      <div class="filter-chip" data-fo="Animais" onclick="setFO('Animais',this)">Animais</div>
+      <div class="filter-chip" data-fo="Estacionamento" onclick="setFO('Estacionamento',this)">Estacion.</div>
+      <div class="filter-chip" data-fo="Conduta" onclick="setFO('Conduta',this)">Conduta</div>
+      <div class="filter-chip" data-fo="Aberta" onclick="setFO('Aberta',this)">Aberta</div>
+      <div class="filter-chip" data-fo="juridico" onclick="setFO('juridico',this)">Juridico</div>
+      <div class="filter-chip" data-fo="Multa" onclick="setFO('Multa',this)">Multa</div>
+      <div class="filter-chip" data-fo="Resolvida" onclick="setFO('Resolvida',this)">Resolvida</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="section-title" style="margin-bottom:0;flex:1">Ocorrencias registradas</div>
+      <button class="btn-secondary" onclick="openHist()">Historico por apto</button>
+    </div>
+    <div class="list-stack" id="ocorrList"></div>
+  </div>
+
+  <!-- IDEIAS -->
+  <div id="tab-ideias" class="content tab-pane">
+    <div class="form-card">
+      <div class="form-title">Nova Ideia</div>
+      <div class="form-grid">
+        <div class="form-field field-with-ai"><textarea class="form-textarea" id="ideiaIn" placeholder="Joga a ideia aqui..." style="min-height:90px"></textarea><button class="btn-improve" id="btnImproveIdeia" onclick="improveText('ideiaIn','ideia')">✨ Melhorar com IA</button><div class="improve-hint" id="hintIdeia"></div></div>
+        <button class="btn-primary" id="btnIdeia" onclick="salvarIdeia()"><span>+ Salvar Ideia</span></button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-chip active" data-fi="todas" onclick="setFI('todas',this)">Todas</div>
+      <div class="filter-chip" data-fi="Melhorias" onclick="setFI('Melhorias',this)">Melhorias</div>
+      <div class="filter-chip" data-fi="Problemas" onclick="setFI('Problemas',this)">Problemas</div>
+      <div class="filter-chip" data-fi="Automacoes" onclick="setFI('Automacoes',this)">Automacoes</div>
+      <div class="filter-chip" data-fi="Eventos" onclick="setFI('Eventos',this)">Eventos</div>
+      <div class="filter-chip" data-fi="Fornecedores" onclick="setFI('Fornecedores',this)">Fornecedores</div>
+      <div class="filter-chip" data-fi="Outros" onclick="setFI('Outros',this)">Outros</div>
+    </div>
+    <div class="section-title">Ideias ativas</div>
+    <div class="list-stack" id="ideiaList"></div>
+    <div class="arch-toggle" id="ideiaArchTog" style="display:none" onclick="togIdeiaArch()"><span id="ideiaArchArr">&#9654;</span><span id="ideiaArchLbl">Ver arquivadas (0)</span></div>
+    <div class="list-stack" id="ideiaArchList" style="display:none;margin-top:10px"></div>
+  </div>
+</div>
+
+
+  <!-- ADMIN -->
+  <div id="tab-admin" class="content tab-pane">
+    <div class="form-card">
+      <div class="form-title">➕ Novo Usuário</div>
+      <div class="form-grid">
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Usuário</label><input class="form-input" id="aUser" placeholder="ex: porteiro1" autocomplete="off"></div>
+          <div class="form-field"><label class="form-label">Nome / Label</label><input class="form-input" id="aLabel" placeholder="ex: Porteiro João"></div>
+        </div>
+        <div class="form-grid form-grid-2">
+          <div class="form-field"><label class="form-label">Senha</label><input class="form-input" id="aSenha" type="password" placeholder="Senha de acesso"></div>
+          <div class="form-field"><label class="form-label">Confirmar Senha</label><input class="form-input" id="aSenha2" type="password" placeholder="Repita a senha"></div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Permissões de acesso</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="aPainel"> 📊 Painel</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="aChamados" checked> 🔧 Chamados</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="aOcorr"> 📋 Ocorrências</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="aIdeias"> 💡 Ideias</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="aAbrirCham"> ➕ Abrir Chamado</label>
+          </div>
+        </div>
+        <button class="btn-primary" id="btnCriarUser" onclick="criarUsuario()"><span>✓ Criar Usuário</span></button>
+      </div>
+    </div>
+
+    <div class="section-title">Usuários cadastrados</div>
+    <div class="list-stack" id="adminUserList"></div>
+  </div>
+
+<!-- HIST MODAL -->
+<div class="hist-modal" id="histModal" style="display:none">
+  <div class="hist-box">
+    <div class="hist-header"><div class="hist-title">Historico por Apartamento</div><button class="hist-close" onclick="closeHist()">x</button></div>
+    <div class="form-grid form-grid-2" style="margin-bottom:16px">
+      <div class="form-field"><label class="form-label">Bloco</label><select class="form-select" id="hBloco" onchange="renderHist()"><option value="">Todos</option><option>Bloco 1</option><option>Bloco 2</option><option>Bloco 3</option><option>Bloco 4</option></select></div>
+      <div class="form-field"><label class="form-label">Apartamento</label><input class="form-input" id="hApto" placeholder="Ex: 201" oninput="renderHist()"></div>
+    </div>
+    <div id="histResult"></div>
+  </div>
+</div>
+
+
+
+<!-- VOICE ASSISTANT -->
+<button class="voice-fab" id="voiceFab" onclick="openVA()" title="Assistente de Voz">🎙️</button>
+
+<div class="va-modal" id="vaModal" style="display:none">
+  <div class="va-box">
+    <div class="va-header">
+      <div class="va-title">🎙️ Assistente Montero360</div>
+      <button class="va-close" onclick="closeVA()">✕</button>
+    </div>
+    <div class="va-messages" id="vaMessages"></div>
+    <div id="vaReviewArea" style="display:none"></div>
+    <div class="va-actions" id="vaActionsArea" style="display:none">
+      <button class="va-restart" onclick="restartVA()">↩ Recomeçar</button>
+      <button class="va-save" onclick="saveFromVA()">✓ Salvar</button>
+    </div>
+    <div class="va-input-area" id="vaInputArea">
+      <input class="va-input" id="vaInput" placeholder="Digite sua resposta..." onkeydown="if(event.key==='Enter')sendVA()">
+      <button class="va-mic" id="vaMic" onclick="toggleMic()" title="Falar">🎤</button>
+      <button class="va-send" onclick="sendVA()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT USER MODAL -->
+<div class="edit-modal" id="editModal" style="display:none">
+  <div class="edit-box">
+    <div class="edit-header">
+      <div class="edit-title" id="editUserTitle">Editar Usuário</div>
+      <button class="edit-close" onclick="closeEditUser()">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-field" id="editLabelField"><label class="form-label">Nome / Label</label><input class="form-input" id="editLabel" placeholder="Nome do usuário"></div>
+      <div class="form-grid form-grid-2">
+        <div class="form-field"><label class="form-label">Nova Senha (opcional)</label><input class="form-input" id="editSenha" type="password" placeholder="Deixe em branco para manter"></div>
+        <div class="form-field"><label class="form-label">Confirmar Senha</label><input class="form-input" id="editSenha2" type="password" placeholder="Repita a senha"></div>
+      </div>
+      <div class="form-field" id="editPermsSection">
+        <label class="form-label">Permissões</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="editPainel"> 📊 Painel</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="editChamados"> 🔧 Chamados</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="editOcorr"> 📋 Ocorrências</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="editIdeias"> 💡 Ideias</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="editAbrirCham"> ➕ Abrir Chamado</label>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="salvarEditUser()"><span>✓ Salvar Alterações</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- PHOTO MODAL -->
+<div class="photo-modal" id="pModal" style="display:none" onclick="closePM()"><img id="pModalImg" src="" alt=""></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const SUPA_URL = "https://ccjjmwpzrbbduccfcbjn.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY";
+const SUPA_HEADERS = {"Content-Type":"application/json","apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY};
+
+async function supaFetch(table, method="GET", body=null, query=""){
+  const url=SUPA_URL+"/rest/v1/"+table+query;
+  const heads={
+    "Content-Type":"application/json",
+    "apikey":SUPA_KEY,
+    "Authorization":"Bearer "+SUPA_KEY
+  };
+  if(method==="POST")heads["Prefer"]="resolution=merge-duplicates,return=minimal";
+  if(method==="PATCH")heads["Prefer"]="return=minimal";
+  const opts={method,headers:heads};
+  if(body)opts.body=JSON.stringify(body);
+  try{
+    const r=await fetch(url,opts);
+    if(r.status===204||r.status===201)return true;
+    if(!r.ok){const e=await r.text();console.error("Supa error:",table,method,r.status,e);return method==="GET"?[]:false;}
+    if(method==="GET"){
+      const j=await r.json();
+      console.log("supaFetch GET",table,"->",Array.isArray(j)?j.length+" rows":typeof j);
+      return j;
+    }
+    return true;
+  }catch(e){console.error("Supa fetch error:",table,method,e);return method==="GET"?[]:false;}
+}
+
+async function sC(chamado){
+  if(!chamado)return;
+  const body={id:chamado.id,tipo:chamado.tipo,prio:chamado.prio,local:chamado.local,bloco:chamado.bloco,apto:chamado.apto,area:chamado.area,descricao:chamado.desc,forn:chamado.forn,atrib:chamado.atrib,status:chamado.status,foto:chamado.foto?chamado.foto.substring(0,2000):null,criado_em:chamado.criadoEm};
+  const ok = await supaFetch("chamados","POST",body,"?on_conflict=id");
+  if(!ok) console.error("Failed to save chamado", chamado.id);
+}
+// OCORRENCIAS — upsert individual
+async function sO(ocorr){
+  if(!ocorr)return;
+  const body={id:ocorr.id,bloco:ocorr.bloco,apto:ocorr.apto,data_ocorr:ocorr.dataOcorr,data_reg:ocorr.dataReg,categoria:ocorr.categoria,acao:ocorr.acao,multa:ocorr.multa,descricao:ocorr.desc,nota:ocorr.nota,foto:ocorr.foto?ocorr.foto.substring(0,2000):null,status:ocorr.status,juridico:ocorr.juridico,data_juridico:ocorr.dataJuridico,criado_em:ocorr.criadoEm};
+  const ok = await supaFetch("ocorrencias","POST",body,"?on_conflict=id");
+  if(!ok) console.error("Failed to save ocorrencia", ocorr.id);
+}
+// IDEIAS — upsert individual
+async function sI(ideia){
+  if(!ideia)return;
+  const body={id:ideia.id,texto:ideia.text,categoria:ideia.cat,ai_expansao:ideia.ai,arquivada:ideia.arch,criado_em:ideia.criadoEm};
+  const ok = await supaFetch("ideias","POST",body,"?on_conflict=id");
+  if(!ok) console.error("Failed to save ideia", ideia.id);
+}
+
+async function load(){
+  console.log("LOAD INICIADO");
+  var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY";
+  var BURL = "https://ccjjmwpzrbbduccfcbjn.supabase.co/rest/v1/";
+  var H = {"apikey":KEY,"Authorization":"Bearer "+KEY};
+  try{
+    console.log("buscando chamados...");
+    var r1 = await fetch(BURL+"chamados?order=criado_em.desc",{headers:H});
+    console.log("chamados status:", r1.status);
+    var d1 = await r1.json();
+    console.log("chamados count:", Array.isArray(d1)?d1.length:typeof d1);
+    if(Array.isArray(d1)){
+      chamados = d1.map(function(c){return {id:c.id,tipo:c.tipo,prio:c.prio,local:c.local,bloco:c.bloco,apto:c.apto,area:c.area,desc:c.descricao,forn:c.forn,atrib:c.atrib,status:c.status,foto:c.foto,criadoEm:c.criado_em};});
+    } else { chamados = []; }
+  }catch(e){console.error("ERRO chamados:",e.message);chamados=[];}
+  try{
+    var r2 = await fetch(BURL+"ocorrencias?order=criado_em.desc",{headers:H});
+    var d2 = await r2.json();
+    if(Array.isArray(d2)){
+      ocorrs = d2.map(function(o){return {id:o.id,bloco:o.bloco,apto:o.apto,dataOcorr:o.data_ocorr,dataReg:o.data_reg,categoria:o.categoria,acao:o.acao,multa:o.multa,desc:o.descricao,nota:o.nota,foto:o.foto,status:o.status,juridico:o.juridico,dataJuridico:o.data_juridico,criadoEm:o.criado_em};});
+    } else { ocorrs = []; }
+  }catch(e){console.error("ERRO ocorrs:",e.message);ocorrs=[];}
+  try{
+    var r3 = await fetch(BURL+"ideias?order=criado_em.desc",{headers:H});
+    var d3 = await r3.json();
+    if(Array.isArray(d3)){
+      ideias = d3.map(function(i){return {id:i.id,text:i.texto,cat:i.categoria,ai:i.ai_expansao,arch:i.arquivada,criadoEm:i.criado_em};});
+    } else { ideias = []; }
+  }catch(e){console.error("ERRO ideias:",e.message);ideias=[];}
+  console.log("LOAD COMPLETO — chamados:",chamados.length,"ocorrs:",ocorrs.length,"ideias:",ideias.length);
+}
+
+async function load(){
+  try{const r=await window.storage.get("m360c");if(r)chamados=JSON.parse(r.value);}catch(e){chamados=[];}
+  try{const r=await window.storage.get("m360o");if(r)ocorrs=JSON.parse(r.value);}catch(e){ocorrs=[];}
+  try{const r=await window.storage.get("m360i");if(r)ideias=JSON.parse(r.value);}catch(e){ideias=[];}
+}
+
+
+
+
+async function doLogin(){
+  const u=document.getElementById("loginUser").value.trim().toLowerCase();
+  const p=document.getElementById("loginPass").value;
+  if(!u||!p){showLoginError("Preencha usuário e senha.");return;}
+
+  const btn=document.querySelector(".btn-login");
+  btn.textContent="Entrando...";btn.disabled=true;
+
+  // Timeout de 8 segundos
+  const timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),8000));
+
+  try{
+    const fetchP=fetch("https://ccjjmwpzrbbduccfcbjn.supabase.co/rest/v1/usuarios?username=eq."+u+"&ativo=eq.true",{headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY"}}).then(r=>r.json());
+    const r=await Promise.race([fetchP,timeout]);
+
+    if(r&&r.length>0){
+      const user=r[0];
+      // Verificar senha
+      if(user.senha!==p){showLoginError("Usuário ou senha incorretos.");btn.textContent="Entrar";btn.disabled=false;return;}
+      CU={
+        username:user.username,role:user.role,label:user.label,
+        tabs:[],canCham:user.pode_abrir_chamado,canOcorr:user.role==="sindico",
+        acesso_painel:user.acesso_painel,acesso_chamados:user.acesso_chamados,
+        acesso_ocorrencias:user.acesso_ocorrencias,acesso_ideias:user.acesso_ideias
+      };
+      if(user.acesso_painel)CU.tabs.push("dashboard");
+      if(user.acesso_chamados)CU.tabs.push("chamados");
+      if(user.acesso_ocorrencias)CU.tabs.push("ocorrencias");
+      if(user.acesso_ideias)CU.tabs.push("ideias");
+      if(user.role==="sindico")CU.tabs.push("admin");
+      if(!CU.tabs.length)CU.tabs.push("chamados");
+      localStorage.setItem("m360session", JSON.stringify({username:user.username}));
+      document.getElementById("loginScreen").style.display="none";
+      document.getElementById("app").style.display="block";
+      document.getElementById("userBadge").textContent=CU.label;
+      applyRole();
+      await load();
+      setDefaultDates();
+      renderAll();
+    }else{
+      showLoginError("Usuário não encontrado ou inativo.");
+    }
+  }catch(e){
+    if(e.message==="timeout"){
+      showLoginError("Conexão lenta. Verifique sua internet e tente novamente.");
+    }else{
+      showLoginError("Erro de conexão. Tente novamente.");
+    }
+  }finally{
+    btn.textContent="Entrar";btn.disabled=false;
+  }
+}
+
+function showLoginError(msg){
+  const el=document.getElementById("loginError");
+  el.textContent=msg;el.style.display="block";
+}
+function doLogout(){CU=null;localStorage.removeItem("m360session");document.getElementById("loginScreen").style.display="flex";document.getElementById("app").style.display="none";document.getElementById("loginUser").value="";document.getElementById("loginPass").value="";document.getElementById("loginError").style.display="none";}
+document.getElementById("loginPass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+
+function applyRole(){
+  ["dashboard","chamados","ocorrencias","ideias","admin"].forEach(t=>{
+    const b=document.getElementById("tab-btn-"+t);
+    if(b)b.style.display=CU.tabs.includes(t)?"":"none";
+  });
+  switchTab(CU.tabs[0],document.getElementById("tab-btn-"+CU.tabs[0]));
+  const fw=document.getElementById("formChamWrap");if(fw)fw.style.display=CU.canCham?"":"none";
+  const sf=document.getElementById("cSindFields");if(sf)sf.style.display=CU.role==="sindico"?"":"none";
+  const oTab=document.getElementById("tab-btn-ocorrencias");if(oTab)oTab.style.display=CU.role==="sindico"?"":"none";
+}
+
+function switchTab(t,el){
+  document.querySelectorAll(".nav-tab").forEach(x=>x.classList.remove("active"));
+  if(el)el.classList.add("active");
+  document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));
+  const pane=document.getElementById("tab-"+t);if(pane)pane.classList.add("active");
+  if(t==="admin")renderAdmin();
+  else renderAll();
+}
+
+function renderAll(){updDash();renderDash();renderCham();renderOcorr();updOStats();renderIdeias();}
+
+function updDash(){
+  document.getElementById("dT").textContent=chamados.length;
+  document.getElementById("dU").textContent=chamados.filter(c=>c.prio==="Urgente"&&c.status!=="Concluido").length;
+  document.getElementById("dA").textContent=chamados.filter(c=>c.status!=="Concluido").length;
+  document.getElementById("dC").textContent=chamados.filter(c=>c.status==="Concluido").length;
+}
+function renderDash(){
+  const list=[...chamados].filter(c=>c.status!=="Concluido").sort((a,b)=>({Urgente:0,Normal:1,Baixa:2}[a.prio]??1)-({Urgente:0,Normal:1,Baixa:2}[b.prio]??1)).slice(0,5);
+  const el=document.getElementById("dashList");
+  el.innerHTML=list.length?list.map(c=>chamCard(c,true)).join(""):"<div class=\"empty\"><div class=\"empty-icon\">✅</div><p>Nenhum chamado em aberto!</p></div>";
+}
+
+function toggleCLocal(){const v=document.getElementById("cLocal").value;document.getElementById("cBlocoW").style.display=v==="apto"?"":"none";document.getElementById("cAptoW").style.display=v==="apto"?"":"none";}
+function setFC(f,el){fC=f;document.querySelectorAll(".filter-chip[data-f]").forEach(b=>b.classList.remove("active"));if(el)el.classList.add("active");renderCham();}
+
+async function salvarChamado(){
+  const desc=document.getElementById("cDesc").value.trim();
+  if(!desc){showToast("Descreva o chamado");return;}
+  const loc=document.getElementById("cLocal").value;
+  const ch={id:Date.now(),tipo:document.getElementById("cTipo").value,prio:document.getElementById("cPrio").value,local:loc,bloco:loc==="apto"?document.getElementById("cBloco").value:null,apto:loc==="apto"?document.getElementById("cApto").value.trim():null,area:document.getElementById("cArea").value.trim(),desc,forn:document.getElementById("cForn")?.value.trim()||"",atrib:document.getElementById("cAtrib")?.value||"",status:"Aberto",criadoEm:new Date().toISOString(),foto:null};
+  chamados.unshift(ch);await sC(ch);
+  document.getElementById("cDesc").value="";document.getElementById("cArea").value="";
+  renderAll();showToast("Chamado aberto");
+}
+async function updChamStatus(id,s){const c=chamados.find(x=>x.id===id);if(c){c.status=s;await sC(c);renderAll();showToast("Status: "+s);}}
+async function upChamFoto(id,file){if(!file)return;const r=new FileReader();r.onload=async e=>{const c=chamados.find(x=>x.id===id);if(c){c.foto=e.target.result;await sC(c);renderAll();showToast("Foto salva!");}};r.readAsDataURL(file);}
+
+function chamCard(c,dash=false){
+  const isSind=CU?.role==="sindico",isZel=CU?.role==="zeladora";
+  if(isZel&&c.atrib!=="Zeladora")return "";
+  const pc={Urgente:"var(--red)",Normal:"var(--blue)",Baixa:"var(--text3)"}[c.prio]||"var(--text3)";
+  const pb={Urgente:"rgba(255,64,96,0.12)",Normal:"rgba(61,122,237,0.12)",Baixa:"rgba(61,65,80,0.2)"}[c.prio]||"";
+  const tc={Corretiva:"var(--orange)",Preventiva:"var(--green)","Ocorrencia Informal":"var(--purple)"}[c.tipo]||"var(--text2)";
+  const tb={Corretiva:"rgba(255,140,66,0.12)",Preventiva:"rgba(0,229,160,0.1)","Ocorrencia Informal":"rgba(155,109,255,0.12)"}[c.tipo]||"";
+  const sO=["Aberto","Aguardando Fornecedor","Em Execucao","Concluido"].map(s=>`<option value="${s}" ${s===c.status?"selected":""}>${s}</option>`).join("");
+  const loc=c.local==="apto"?`${c.bloco||""} Apto ${c.apto||"?"}${c.area?" / "+c.area:""}`:c.area||"Area comum";
+  const dt=new Date(c.criadoEm).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+  const showSel=(isSind||isZel)&&!dash;
+  return `<div class="card" style="--ac:${pc}"><div class="card-accent"></div>
+    <div class="card-top"><div class="badges"><span class="badge" style="background:${tb};color:${tc};border-color:${tc}33">${c.tipo}</span><span class="badge" style="background:${pb};color:${pc};border-color:${pc}33">${c.prio}</span>${c.atrib?`<span class="badge" style="background:rgba(201,168,76,0.1);color:var(--gold);border-color:var(--gold)33">${c.atrib}</span>`:""}</div>
+    ${showSel?`<select class="inline-select" onchange="updChamStatus(${c.id},this.value)">${sO}</select>`:`<span class="badge" style="background:var(--surface2);color:var(--text2)">${c.status}</span>`}</div>
+    <div class="card-body">${esc(c.desc)}</div>
+    <div class="card-meta"><span>📍 ${esc(loc)}</span>${c.forn?`<span>🤝 ${esc(c.forn)}</span>`:""}<span>🕐 ${dt}</span></div>
+    ${c.foto?`<div class="photo-thumb" onclick="openPM('${c.foto}')"><img src="${c.foto}" alt="Foto"></div>`:""}
+    ${isZel&&c.atrib==="Zeladora"&&!c.foto?`<div class="photo-upload" onclick="document.getElementById('cf${c.id}').click()">Adicionar foto da execucao<input type="file" id="cf${c.id}" accept="image/*" onchange="upChamFoto(${c.id},this.files[0])"></div>`:""}
+  </div>`;
+}
+function renderCham(){
+  const isZel=CU?.role==="zeladora";
+  let ativos=chamados.filter(c=>c.status!=="Concluido");
+  let concl=chamados.filter(c=>c.status==="Concluido");
+  if(isZel){ativos=ativos.filter(c=>c.atrib==="Zeladora");concl=concl.filter(c=>c.atrib==="Zeladora");}
+  const ff=c=>{if(fC==="todos")return true;if(fC==="Urgente")return c.prio==="Urgente";if(fC==="Aberto")return c.status==="Aberto";return c.tipo===fC;};
+  const el=document.getElementById("chamList");
+  const f=ativos.filter(ff).map(c=>chamCard(c)).filter(Boolean);
+  el.innerHTML=f.length?f.join(""):"<div class=\"empty\"><div class=\"empty-icon\">🔧</div><p>Nenhum chamado encontrado.</p></div>";
+  const ae=document.getElementById("chamArchList");
+  ae.innerHTML=concl.map(c=>chamCard(c)).filter(Boolean).join("")||"<div class=\"empty\"><p>Nenhum concluido.</p></div>";
+  document.getElementById("chamArchLbl").textContent="Ver concluidos ("+concl.length+")";
+  document.getElementById("chamArchTog").style.display=concl.length?"flex":"none";
+}
+function togChamArch(){showCA=!showCA;document.getElementById("chamArchList").style.display=showCA?"block":"none";document.getElementById("chamArchArr").textContent=showCA?"▼":"▶";}
+
+function toggleMulta(){document.getElementById("oMultaW").style.display=document.getElementById("oAcao").value==="Multa"?"":"none";}
+function setDefaultDates(){const n=new Date().toISOString().slice(0,16);document.getElementById("oDataOcorr").value=n;document.getElementById("oDataReg").value=n;}
+function checkReincid(){
+  const apto=document.getElementById("oApto").value.trim();
+  const bloco=document.getElementById("oBloco").value;
+  if(!apto){document.getElementById("reincidAlert").style.display="none";return;}
+  const h=ocorrs.filter(o=>o.apto===apto&&(!bloco||o.bloco===bloco));
+  const al=document.getElementById("reincidAlert");
+  if(h.length>0){document.getElementById("reincidMsg").textContent="⚠️ Este apartamento ja tem "+h.length+" ocorrencia(s). Possivel reincidencia!";al.style.display="flex";}
+  else{al.style.display="none";}
+}
+function prevOFoto(inp){if(!inp.files[0])return;const r=new FileReader();r.onload=e=>{oFoto=e.target.result;document.getElementById("oFotoImg").src=oFoto;document.getElementById("oFotoPrev").style.display="block";};r.readAsDataURL(inp.files[0]);}
+function clearOFoto(){oFoto=null;document.getElementById("oFotoIn").value="";document.getElementById("oFotoPrev").style.display="none";}
+
+async function salvarOcorr(){
+  const apto=document.getElementById("oApto").value.trim();
+  const bloco=document.getElementById("oBloco").value;
+  const desc=document.getElementById("oDesc").value.trim();
+  if(!apto||!bloco||!desc){showToast("Preencha bloco, apartamento e descricao");return;}
+  const acao=document.getElementById("oAcao").value;
+  const multa=acao==="Multa"?parseFloat(document.getElementById("oMultaVal").value)||0:null;
+  const o={id:Date.now(),bloco,apto,dataOcorr:document.getElementById("oDataOcorr").value,dataReg:document.getElementById("oDataReg").value,categoria:document.getElementById("oCat").value,acao,multa,desc,nota:document.getElementById("oNota").value.trim(),foto:oFoto,status:"Aberta",juridico:false,dataJuridico:null,criadoEm:new Date().toISOString()};
+  ocorrs.unshift(o);await sO(o);
+  document.getElementById("oApto").value="";document.getElementById("oBloco").value="";document.getElementById("oDesc").value="";document.getElementById("oNota").value="";document.getElementById("oMultaVal").value="";document.getElementById("oMultaW").style.display="none";document.getElementById("oAcao").value="Aviso WhatsApp";clearOFoto();document.getElementById("reincidAlert").style.display="none";setDefaultDates();
+  renderOcorr();updOStats();showToast("Ocorrencia registrada!");
+}
+async function updOStatus(id,s){const o=ocorrs.find(x=>x.id===id);if(o){o.status=s;await sO(o);renderOcorr();updOStats();showToast("Status: "+s);}}
+async function togJur(id){
+  const o=ocorrs.find(x=>x.id===id);if(!o)return;
+  o.juridico=!o.juridico;o.dataJuridico=o.juridico?new Date().toISOString():null;
+  await sO(o);renderOcorr();updOStats();showToast(o.juridico?"Enviado ao Juridico":"Removido do Juridico");
+}
+function updOStats(){
+  document.getElementById("oT").textContent=ocorrs.length;
+  document.getElementById("oA").textContent=ocorrs.filter(o=>o.status==="Aberta").length;
+  document.getElementById("oJ").textContent=ocorrs.filter(o=>o.juridico).length;
+  document.getElementById("oR").textContent=ocorrs.filter(o=>o.status==="Resolvida").length;
+}
+function setFO(f,el){fO=f;document.querySelectorAll(".filter-chip[data-fo]").forEach(b=>b.classList.remove("active"));if(el)el.classList.add("active");renderOcorr();}
+function renderOcorr(){
+  const search=document.getElementById("oSearch").value.trim().toLowerCase();
+  const ff=o=>{
+    const ms=!search||o.apto.toLowerCase().includes(search)||o.bloco.toLowerCase().includes(search);
+    if(!ms)return false;
+    if(fO==="todas")return true;if(fO==="juridico")return o.juridico;if(fO==="Aberta")return o.status==="Aberta";if(fO==="Resolvida")return o.status==="Resolvida";if(fO==="Multa")return o.acao==="Multa";return o.categoria===fO;
+  };
+  const el=document.getElementById("ocorrList");
+  const list=ocorrs.filter(ff);
+  el.innerHTML=list.length?list.map(o=>ocorrCard(o)).join(""):"<div class=\"empty\"><div class=\"empty-icon\">📋</div><p>Nenhuma ocorrencia encontrada.</p></div>";
+}
+function ocorrCard(o){
+  const cc=OCATC[o.categoria]||OCATC.Outros;
+  const sO=["Aberta","Notificada","Multada","Resolvida"].map(s=>`<option value="${s}" ${s===o.status?"selected":""}>${s}</option>`).join("");
+  const hist=ocorrs.filter(x=>x.apto===o.apto&&x.bloco===o.bloco).length;
+  const dOcorr=o.dataOcorr?new Date(o.dataOcorr).toLocaleString("pt-BR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"—";
+  const dJur=o.dataJuridico?new Date(o.dataJuridico).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"—";
+  const jurC=o.juridico?"var(--green)":"var(--orange)";
+  const jurBg=o.juridico?"rgba(0,229,160,0.1)":"rgba(255,140,66,0.1)";
+  const jurLbl=o.juridico?"Enviado ao Juridico ("+dJur+")":"Nao Enviado ao Juridico";
+  return `<div class="card" style="--ac:${cc.c}"><div class="card-accent"></div>
+    <div class="card-top"><div class="badges">
+      <span class="badge" style="background:${cc.bg};color:${cc.c};border-color:${cc.c}33">${o.categoria}</span>
+      <span class="badge" style="background:rgba(201,168,76,0.1);color:var(--gold);border-color:var(--gold)33">${o.acao}${o.multa?" R$ "+o.multa.toFixed(2):""}</span>
+      ${hist>1?`<span class="badge" style="background:rgba(255,64,96,0.15);color:var(--red);border-color:var(--red)33">Reincidente ${hist}x</span>`:""}
+    </div>
+    <select class="inline-select" onchange="updOStatus(${o.id},this.value)">${sO}</select></div>
+    <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px">📍 ${esc(o.bloco)} — Apto ${esc(o.apto)}</div>
+    <div class="card-body">${esc(o.desc)}</div>
+    ${o.nota?`<div style="margin-top:8px;padding:8px 12px;background:rgba(201,168,76,0.06);border-left:2px solid var(--gold);border-radius:0 6px 6px 0;font-size:12px;color:var(--text3)">🔒 ${esc(o.nota)}</div>`:""}
+    <div class="card-meta" style="margin-top:10px"><span>📅 Ocorrencia: ${dOcorr}</span></div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="togJur(${o.id})" class="btn-secondary" style="font-size:11px;border-color:${jurC}33;color:${jurC};background:${jurBg}">${jurLbl}</button>
+      ${o.foto?`<button onclick="openPM('${o.foto}')" class="btn-secondary" style="font-size:11px">Ver evidencia</button>`:""}
+    </div>
+  </div>`;
+}
+
+function openHist(){document.getElementById("histModal").style.display="flex";renderHist();}
+function closeHist(){document.getElementById("histModal").style.display="none";}
+function renderHist(){
+  const apto=document.getElementById("hApto").value.trim();
+  const bloco=document.getElementById("hBloco").value;
+  const el=document.getElementById("histResult");
+  if(!apto){el.innerHTML=`<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px">Digite um apartamento</div>`;return;}
+  const list=ocorrs.filter(o=>o.apto.toLowerCase()===apto.toLowerCase()&&(!bloco||o.bloco===bloco));
+  if(!list.length){el.innerHTML=`<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px">Nenhuma ocorrencia para este apartamento</div>`;return;}
+  el.innerHTML=(list.length>1?`<div class="hist-reincid">Reincidente — ${list.length} ocorrencias registradas</div>`:"")
+    +list.map(o=>{
+      const cc=OCATC[o.categoria]||OCATC.Outros;
+      const dt=o.dataOcorr?new Date(o.dataOcorr).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—";
+      return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;border-left:3px solid ${cc.c}">
+        <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+          <span class="badge" style="background:${cc.bg};color:${cc.c};border-color:${cc.c}33">${o.categoria}</span>
+          <span class="badge" style="background:var(--surface3);color:var(--text2)">${o.acao}</span>
+          <span class="badge" style="background:var(--surface3);color:var(--text2)">${o.status}</span>
+          ${o.juridico?`<span class="badge" style="background:rgba(0,229,160,0.1);color:var(--green)">Juridico</span>`:""}
+        </div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:6px">${esc(o.desc)}</div>
+        <div style="font-size:11px;color:var(--text3)">📅 ${dt}</div>
+      </div>`;
+    }).join("");
+}
+
+function setFI(f,el){fI=f;document.querySelectorAll(".filter-chip[data-fi]").forEach(b=>b.classList.remove("active"));if(el)el.classList.add("active");renderIdeias();}
+function autoIC(t){const l=t.toLowerCase();for(const[cat,keys]of Object.entries(IKEYS)){if(keys.some(k=>l.includes(k)))return cat;}return "Outros";}
+const ANTHROPIC_KEY="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";async function callAI(p){const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:p}]})}); if(!res.ok){throw new Error("API error: "+res.status);}const d=await res.json();return d.content?.map(b=>b.text||"").join("")||"";}
+async function salvarIdeia(){
+  const inp=document.getElementById("ideiaIn");const text=inp.value.trim();if(!text)return;
+  const btn=document.getElementById("btnIdeia");btn.disabled=true;btn.innerHTML="<span class=\"loading-dots\"><span>·</span><span>·</span><span>·</span></span>";
+  let cat="Outros";
+  try{const r=await callAI(`Classifique em UMA categoria: Melhorias, Problemas, Automacoes, Eventos, Fornecedores, Outros.
+Ideia: "${text}"
+Responda SOMENTE com o nome da categoria.`);const cl=r.trim();cat=ICATS.includes(cl)?cl:autoIC(text);}catch(e){cat=autoIC(text);}
+  const novaIdeia={id:Date.now(),text,cat,criadoEm:new Date().toISOString(),arch:false,ai:null};
+  ideias.unshift(novaIdeia);
+  await sI(novaIdeia);inp.value="";btn.disabled=false;btn.innerHTML="<span>+ Salvar Ideia</span>";renderIdeias();showToast("Ideia salva em "+cat);
+}
+async function expandI(id){
+  const i=ideias.find(x=>x.id===id);if(!i)return;
+  const btn=document.getElementById("exp-"+id);if(btn){btn.textContent="⏳";btn.disabled=true;}
+  try{const r=await callAI(`Expanda essa ideia com sugestoes praticas e proximos passos para reducao da carga do sindico. Max 180 palavras.
+Ideia: "${i.text}"
+Categoria: ${i.cat}`);i.ai=r;await sI();renderIdeias();}catch(e){showToast("Erro ao conectar com IA.");}
+  if(btn){btn.textContent="🤖";btn.disabled=false;}
+}
+async function archI(id){const i=ideias.find(x=>x.id===id);if(i){i.arch=!i.arch;await sI(i);renderIdeias();showToast(i.arch?"Arquivada":"Restaurada");}}
+async function chgI(id,cat){const i=ideias.find(x=>x.id===id);if(i){i.cat=cat;await sI(i);renderIdeias();}}
+function renderIdeias(){
+  const act=ideias.filter(i=>!i.arch);const arch=ideias.filter(i=>i.arch);
+  const ff=i=>fI==="todas"||i.cat===fI;
+  renderIL("ideiaList",act.filter(ff),false);renderIL("ideiaArchList",arch.filter(ff),true);
+  document.getElementById("ideiaArchLbl").textContent="Ver arquivadas ("+arch.length+")";
+  document.getElementById("ideiaArchTog").style.display=arch.length?"flex":"none";
+}
+function renderIL(cid,list,isA){
+  const el=document.getElementById(cid);
+  if(!list.length){if(!isA)el.innerHTML="<div class=\"empty\"><div class=\"empty-icon\">💡</div><p>Nenhuma ideia ainda.</p></div>";else el.innerHTML="";return;}
+  const CO=ICATS.map(c=>(i)=>`<option value="${c}" ${c===i.cat?"selected":""}>${c}</option>`);
+  el.innerHTML=list.map(i=>{
+    const col=ICICOL[i.cat]||ICICOL.Outros;
+    const dt=new Date(i.criadoEm).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+    const opts=ICATS.map(c=>`<option value="${c}" ${c===i.cat?"selected":""}>${c}</option>`).join("");
+    return `<div class="card" style="${isA?"opacity:.5":""}">
+      <div class="card-top">
+        <select class="inline-select" style="background:${col.bg};color:${col.c};border-color:${col.c}33" onchange="chgI(${i.id},this.value)">${opts}</select>
+        <div class="card-actions"><button class="icon-btn" id="exp-${i.id}" onclick="expandI(${i.id})">🤖</button><button class="icon-btn" onclick="archI(${i.id})">${isA?"↩️":"📦"}</button></div>
+      </div>
+      <div class="card-body">${esc(i.text)}</div>
+      ${i.ai?`<div class="ai-response"><div class="ai-label">IA desenvolveu</div>${esc(i.ai)}</div>`:""}
+      <div class="card-meta">🕐 ${dt}</div>
+    </div>`;
+  }).join("");
+}
+function togIdeiaArch(){showIA=!showIA;document.getElementById("ideiaArchList").style.display=showIA?"block":"none";document.getElementById("ideiaArchArr").textContent=showIA?"▼":"▶";}
+
+function openPM(src){document.getElementById("pModalImg").src=src;document.getElementById("pModal").style.display="flex";}
+function closePM(){document.getElementById("pModal").style.display="none";}
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");}
+function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400);}
+
+
+// ===== ADMIN =====
+let editingUserId = null;
+
+async function loadUsuarios(){
+  try{
+    const r = await supaFetch("usuarios","GET",null,"?order=id.asc");
+    return r;
+  }catch(e){return [];}
+}
+
+async function renderAdmin(){
+  const users = await loadUsuarios();
+  const el = document.getElementById("adminUserList");
+  if(!users.length){el.innerHTML='<div class="empty"><div class="empty-icon">👤</div><p>Nenhum usuário cadastrado.</p></div>';return;}
+  
+  const permLabels = {acesso_painel:"📊 Painel",acesso_chamados:"🔧 Chamados",acesso_ocorrencias:"📋 Ocorrências",acesso_ideias:"💡 Ideias",pode_abrir_chamado:"➕ Abrir Chamado"};
+  
+  el.innerHTML = users.map(u => {
+    const perms = Object.entries(permLabels).filter(([k])=>u[k]).map(([,v])=>`<span class="badge" style="background:var(--surface3);color:var(--text2)">${v}</span>`).join("");
+    const isSind = u.role === "sindico";
+    return `<div class="user-card ${u.ativo?'':'inactive'}">
+      <div class="user-info">
+        <div class="user-name">${esc(u.label)} <span style="font-size:11px;color:var(--text3);font-weight:400">@${esc(u.username)}</span></div>
+        <div class="user-perms">${perms||'<span style="font-size:11px;color:var(--text3)">Sem permissões</span>'}</div>
+        <div class="user-meta" style="margin-top:4px">Criado: ${new Date(u.criado_em).toLocaleDateString("pt-BR")}</div>
+      </div>
+      <div class="user-actions">
+        ${!isSind?`
+        <label class="toggle-switch" title="${u.ativo?'Desativar':'Ativar'}">
+          <input type="checkbox" ${u.ativo?'checked':''} onchange="toggleUserAtivo(${u.id},this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+        <button class="btn-secondary" onclick="openEditUser(${u.id})" style="font-size:12px;padding:6px 12px">✏️ Editar</button>
+        `:`<button class="btn-secondary" onclick="openEditSindico(${u.id})" style="font-size:12px;padding:6px 12px">🔑 Alterar Senha</button>`}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function criarUsuario(){
+  const username = document.getElementById("aUser").value.trim().toLowerCase();
+  const label    = document.getElementById("aLabel").value.trim();
+  const senha    = document.getElementById("aSenha").value;
+  const senha2   = document.getElementById("aSenha2").value;
+  if(!username||!label||!senha){showToast("⚠️ Preencha todos os campos");return;}
+  if(senha!==senha2){showToast("⚠️ As senhas não coincidem");return;}
+  if(senha.length<6){showToast("⚠️ Senha mínima de 6 caracteres");return;}
+
+  const body = {
+    username, senha, label, role:"custom", ativo:true,
+    acesso_painel:    document.getElementById("aPainel").checked,
+    acesso_chamados:  document.getElementById("aChamados").checked,
+    acesso_ocorrencias: document.getElementById("aOcorr").checked,
+    acesso_ideias:    document.getElementById("aIdeias").checked,
+    pode_abrir_chamado: document.getElementById("aAbrirCham").checked
+  };
+
+  try{
+    await supaFetch("usuarios","POST",body);
+    document.getElementById("aUser").value="";
+    document.getElementById("aLabel").value="";
+    document.getElementById("aSenha").value="";
+    document.getElementById("aSenha2").value="";
+    document.getElementById("aPainel").checked=false;
+    document.getElementById("aChamados").checked=true;
+    document.getElementById("aOcorr").checked=false;
+    document.getElementById("aIdeias").checked=false;
+    document.getElementById("aAbrirCham").checked=false;
+    renderAdmin();
+    showToast("✓ Usuário criado!");
+  }catch(e){showToast("Erro: usuário já existe ou dados inválidos");}
+}
+
+async function toggleUserAtivo(id, ativo){
+  try{
+    await supaFetch("usuarios","PATCH",{ativo},`?id=eq.${id}`);
+    renderAdmin();
+    showToast(ativo?"Usuário ativado":"Usuário desativado");
+  }catch(e){showToast("Erro ao atualizar");}
+}
+
+
+function openEditSindico(id){
+  editingUserId = id;
+  document.getElementById("editSenha").value = "";
+  document.getElementById("editSenha2").value = "";
+  document.getElementById("editLabel").value = "Síndico";
+  document.getElementById("editPainel").checked = true;
+  document.getElementById("editChamados").checked = true;
+  document.getElementById("editOcorr").checked = true;
+  document.getElementById("editIdeias").checked = true;
+  document.getElementById("editAbrirCham").checked = true;
+  document.getElementById("editUserTitle").textContent = "Alterar Senha do Síndico";
+  // Hide permissions for sindico
+  document.getElementById("editPermsSection").style.display = "none";
+  document.getElementById("editLabelField").style.display = "none";
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function openEditUser(id){
+  editingUserId = id;
+  loadUsuarios().then(users=>{
+    const u = users.find(x=>x.id===id);
+    if(!u)return;
+    document.getElementById("editLabel").value = u.label;
+    document.getElementById("editSenha").value = "";
+    document.getElementById("editSenha2").value = "";
+    document.getElementById("editPainel").checked = u.acesso_painel;
+    document.getElementById("editChamados").checked = u.acesso_chamados;
+    document.getElementById("editOcorr").checked = u.acesso_ocorrencias;
+    document.getElementById("editIdeias").checked = u.acesso_ideias;
+    document.getElementById("editAbrirCham").checked = u.pode_abrir_chamado;
+    document.getElementById("editUserTitle").textContent = "Editar: @"+u.username;
+    document.getElementById("editPermsSection").style.display = "";
+    document.getElementById("editLabelField").style.display = "";
+    document.getElementById("editModal").style.display="flex";
+  });
+}
+
+
+function closeEditUser(){document.getElementById("editModal").style.display="none";editingUserId=null;}
+
+async function salvarEditUser(){
+  if(!editingUserId)return;
+  const senha  = document.getElementById("editSenha").value;
+  const senha2 = document.getElementById("editSenha2").value;
+  if(senha&&senha!==senha2){showToast("⚠️ As senhas não coincidem");return;}
+  if(senha&&senha.length<6){showToast("⚠️ Senha mínima de 6 caracteres");return;}
+
+  const body = {
+    label: document.getElementById("editLabel").value.trim(),
+    acesso_painel:      document.getElementById("editPainel").checked,
+    acesso_chamados:    document.getElementById("editChamados").checked,
+    acesso_ocorrencias: document.getElementById("editOcorr").checked,
+    acesso_ideias:      document.getElementById("editIdeias").checked,
+    pode_abrir_chamado: document.getElementById("editAbrirCham").checked
+  };
+  if(senha) body.senha = senha;
+
+  try{
+    await supaFetch("usuarios","PATCH",body,`?id=eq.${editingUserId}`);
+    closeEditUser();
+    renderAdmin();
+    showToast("✓ Usuário atualizado!");
+  }catch(e){showToast("Erro ao salvar");}
+}
+
+
+
+// ===== ASSISTENTE DE DESCRICAO =====
+const IMPROVE_PROMPTS = {
+  chamado: "Voce e um assistente de gestao condominial. Melhore a descricao abaixo para um chamado de manutencao: linguagem clara, objetiva e tecnica. Mantenha todas as informacoes importantes. Maximo 3 frases. Responda APENAS com o texto melhorado, sem explicacoes.",
+  ocorrencia: "Voce e um assistente juridico de condominio. Reescreva a descricao abaixo para um registro formal de ocorrencia: linguagem formal, precisa e adequada para fins juridicos. Inclua fatos objetivos. Maximo 4 frases. Responda APENAS com o texto melhorado, sem explicacoes.",
+  nota: "Voce e um assistente de gestao condominial. Melhore esta nota interna do sindico: linguagem clara e direta, mantendo o carater pessoal e informal. Maximo 3 frases. Responda APENAS com o texto melhorado, sem explicacoes.",
+  ideia: "Voce e um assistente criativo de gestao condominial. Reescreva esta ideia de forma clara, organizada e com potencial de execucao: destaque o objetivo principal e o beneficio esperado. Maximo 3 frases. Responda APENAS com o texto melhorado, sem explicacoes."
+};
+
+async function improveText(fieldId, context){
+  const textarea = document.getElementById(fieldId);
+  const text = textarea.value.trim();
+  if(!text){showToast("Digite algo primeiro para melhorar!");return;}
+  if(text.length < 10){showToast("Escreva um pouco mais para a IA melhorar!");return;}
+
+  const btnMap = {cDesc:"btnImproveCham",oDesc:"btnImproveOcorr",oNota:"btnImproveNota",ideiaIn:"btnImproveIdeia"};
+  const hintMap = {cDesc:"hintCham",oDesc:"hintOcorr",oNota:"hintNota",ideiaIn:"hintIdeia"};
+  const btn = document.getElementById(btnMap[fieldId]);
+  const hint = document.getElementById(hintMap[fieldId]);
+
+  btn.disabled=true;
+  btn.classList.add("loading");
+  btn.innerHTML='<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>';
+  if(hint)hint.textContent="";
+
+  try{
+    const prompt = IMPROVE_PROMPTS[context] + " Texto original: " + text;
+    const result = await callAI(prompt);
+    const improved = result.trim();
+    if(improved){
+      // Save original
+      textarea.dataset.original = text;
+      textarea.value = improved;
+      textarea.style.borderColor = "var(--gold)";
+      if(hint){
+        hint.innerHTML = "<span style=\"color:var(--gold)\">Melhorado pela IA</span> &nbsp;|&nbsp; <a href=\"#\" onclick=\"restoreOriginal('"+fieldId+"');return false;\" style=\"color:var(--text3);font-size:10px\">Restaurar original</a>";
+      }
+      showToast("Texto melhorado!");
+    }
+  }catch(e){
+    showToast("Erro ao conectar com a IA. Tente novamente.");
+  }finally{
+    btn.disabled=false;
+    btn.classList.remove("loading");
+    btn.innerHTML="✨ Melhorar com IA";
+  }
+}
+
+function restoreOriginal(fieldId){
+  const textarea = document.getElementById(fieldId);
+  if(textarea.dataset.original){
+    textarea.value = textarea.dataset.original;
+    textarea.style.borderColor = "";
+    const hintMap = {cDesc:"hintCham",oDesc:"hintOcorr",oNota:"hintNota",ideiaIn:"hintIdeia"};
+    const hint = document.getElementById(hintMap[fieldId]);
+    if(hint)hint.textContent="";
+    delete textarea.dataset.original;
+  }
+}
+
+// ===== VOICE ASSISTANT =====
+let vaOpen = false;
+let vaStep = 0;
+let vaType = null; // chamado, ocorrencia, ideia
+let vaData = {};
+let vaFlow = [];
+let vaCurrentFlow = [];
+let recognition = null;
+let isListening = false;
+
+const VA_FLOWS = {
+  chamado: [
+    {key:'tipo', q:'Qual o tipo? Manutenção Corretiva, Preventiva ou Ocorrência Informal?', opts:['Corretiva','Preventiva','Ocorrencia Informal']},
+    {key:'prio', q:'Qual a prioridade? Urgente, Normal ou Baixa?', opts:['Urgente','Normal','Baixa']},
+    {key:'local', q:'É em uma área comum ou apartamento?', opts:['area','apto']},
+    {key:'area', q:'Qual área ou equipamento? (ex: Elevador, Piscina, Portaria)', opts:null},
+    {key:'desc', q:'Descreva o problema:', opts:null},
+    {key:'forn', q:'Tem fornecedor/prestador? (ou diga "nenhum")', opts:null},
+    {key:'atrib', q:'Atribuir à Zeladora? (sim ou não)', opts:['Zeladora','']},
+  ],
+  ocorrencia: [
+    {key:'bloco', q:'Qual o bloco do infrator? (1, 2, 3 ou 4)', opts:['Bloco 1','Bloco 2','Bloco 3','Bloco 4']},
+    {key:'apto', q:'Qual o número do apartamento?', opts:null},
+    {key:'categoria', q:'Qual a categoria? Barulho, Animais, Estacionamento, Conduta ou Outros?', opts:['Barulho','Animais','Estacionamento','Conduta','Outros']},
+    {key:'acao', q:'Qual ação tomada? Aviso WhatsApp, Notificação ou Multa?', opts:['Aviso WhatsApp','Notificacao','Multa']},
+    {key:'desc', q:'Descreva a ocorrência:', opts:null},
+    {key:'nota', q:'Alguma nota interna? (ou diga "nenhuma")', opts:null},
+  ],
+  ideia: [
+    {key:'text', q:'Qual é a sua ideia?', opts:null},
+  ]
+};
+
+function openVA(){
+  vaOpen=true;
+  vaStep=0;vaType=null;vaData={};
+  document.getElementById("vaModal").style.display="flex";
+  document.getElementById("vaMessages").innerHTML="";
+  document.getElementById("vaReviewArea").style.display="none";
+  document.getElementById("vaActionsArea").style.display="none";
+  document.getElementById("vaInputArea").style.display="flex";
+  setTimeout(()=>{
+    addVAMsg("ai","Ola! O que vamos registrar?\n\nChamado\nOcorrencia\nIdeia");
+  },300);
+}
+
+function closeVA(){
+  document.getElementById("vaModal").style.display="none";
+  stopMic();
+  vaOpen=false;
+}
+
+function restartVA(){
+  openVA();
+}
+
+function addVAMsg(type, text){
+  const el=document.getElementById("vaMessages");
+  const div=document.createElement("div");
+  div.className=`va-msg ${type}`;
+  div.innerHTML=text.replace(/\n/g,"<br>");
+  el.appendChild(div);
+  el.scrollTop=el.scrollHeight;
+}
+
+function addTyping(){
+  const el=document.getElementById("vaMessages");
+  const div=document.createElement("div");
+  div.className="va-msg ai";div.id="vaTyping";
+  div.innerHTML='<div class="va-typing"><span></span><span></span><span></span></div>';
+  el.appendChild(div);
+  el.scrollTop=el.scrollHeight;
+}
+function removeTyping(){const t=document.getElementById("vaTyping");if(t)t.remove();}
+
+async function sendVA(){
+  const inp=document.getElementById("vaInput");
+  const text=inp.value.trim();
+  if(!text)return;
+  inp.value="";
+  addVAMsg("user",text);
+  processVA(text);
+}
+
+async function processVA(text){
+  const lower=text.toLowerCase();
+
+  // Step 0: escolher tipo
+  if(vaStep===0){
+    if(lower.includes("chamado")||lower.includes("manut")||lower.includes("corretiva")||lower.includes("preventiva")){
+      vaType="chamado";vaCurrentFlow=VA_FLOWS.chamado;vaStep=1;
+      addTyping();
+      await sleep(600);removeTyping();
+      addVAMsg("ai","Ótimo! Vamos registrar um chamado. 🔧\n\n"+vaCurrentFlow[0].q);
+    }else if(lower.includes("ocorr")||lower.includes("barulho")||lower.includes("recla")){
+      vaType="ocorrencia";vaCurrentFlow=VA_FLOWS.ocorrencia;vaStep=1;
+      addTyping();await sleep(600);removeTyping();
+      addVAMsg("ai","Certo! Vamos registrar uma ocorrência. 📋\n\n"+vaCurrentFlow[0].q);
+    }else if(lower.includes("ideia")||lower.includes("sugest")||lower.includes("melhoria")){
+      vaType="ideia";vaCurrentFlow=VA_FLOWS.ideia;vaStep=1;
+      addTyping();await sleep(600);removeTyping();
+      addVAMsg("ai","Perfeito! Me conta sua ideia.");
+    }else{
+      addTyping();await sleep(500);removeTyping();
+      addVAMsg("ai","Não entendi. 😅 Diga:\n\n📋 Chamado\n🚨 Ocorrência\n💡 Ideia");
+    }
+    return;
+  }
+
+  // Steps seguintes — salvar resposta e avançar
+  const currentQ = vaCurrentFlow[vaStep-1];
+  let valor = text;
+
+  // Normalizar resposta para opções conhecidas
+  if(currentQ.opts){
+    const match = currentQ.opts.find(o=>lower.includes(o.toLowerCase().split(" ")[0]));
+    if(match)valor=match;
+  }
+
+  // Tratamentos especiais
+  if(currentQ.key==="forn"&&(lower==="nenhum"||lower==="não"||lower==="nao"))valor="";
+  if(currentQ.key==="nota"&&(lower==="nenhuma"||lower==="não"||lower==="nao"))valor="";
+  if(currentQ.key==="atrib"){valor=lower.includes("sim")||lower.includes("zel")?"Zeladora":"";}
+  if(currentQ.key==="local"){valor=lower.includes("apto")||lower.includes("apart")?"apto":"area";}
+  if(currentQ.key==="bloco"&&!lower.includes("bloco"))valor="Bloco "+text.replace(/[^0-9]/g,"");
+
+  vaData[currentQ.key]=valor;
+  vaStep++;
+
+  // Pular campo bloco/apto se area comum (chamado)
+  if(vaType==="chamado"&&vaData.local==="area"&&vaStep-1<vaCurrentFlow.length&&vaCurrentFlow[vaStep-1]?.key==="area"){
+    // keep going
+  }
+
+  if(vaStep>vaCurrentFlow.length){
+    // Finalizado — mostrar revisão
+    addTyping();await sleep(700);removeTyping();
+    addVAMsg("ai","Perfeito! 🎉 Revise os dados abaixo e edite o que precisar:");
+    showVAReview();
+  }else{
+    addTyping();await sleep(500);removeTyping();
+    addVAMsg("ai",vaCurrentFlow[vaStep-1].q);
+  }
+}
+
+function showVAReview(){
+  document.getElementById("vaInputArea").style.display="none";
+  document.getElementById("vaReviewArea").style.display="block";
+  document.getElementById("vaActionsArea").style.display="flex";
+
+  const labels={
+    tipo:"Tipo",prio:"Prioridade",local:"Local",area:"Área/Equipamento",
+    desc:"Descrição",forn:"Fornecedor",atrib:"Atribuído à",
+    bloco:"Bloco",apto:"Apartamento",categoria:"Categoria",
+    acao:"Ação tomada",nota:"Nota interna",text:"Ideia"
+  };
+
+  let html='<div class="va-review"><div class="va-review-title">✦ Revisão — edite se necessário</div>';
+  for(const [k,v] of Object.entries(vaData)){
+    if(k==="local")continue;
+    html+=`<div class="va-field"><label class="va-field-label">${labels[k]||k}</label><input class="va-field-val" id="vaf-${k}" value="${esc(v||"")}"></div>`;
+  }
+  html+='</div>';
+  document.getElementById("vaReviewArea").innerHTML=html;
+}
+
+async function saveFromVA(){
+  // Atualizar vaData com valores editados
+  for(const k of Object.keys(vaData)){
+    const el=document.getElementById("vaf-"+k);
+    if(el)vaData[k]=el.value.trim();
+  }
+
+  if(vaType==="chamado"){
+    const ch={id:Date.now(),tipo:vaData.tipo||"Corretiva",prio:vaData.prio||"Normal",local:vaData.local||"area",bloco:null,apto:null,area:vaData.area||"",desc:vaData.desc||"",forn:vaData.forn||"",atrib:vaData.atrib||"",status:"Aberto",criadoEm:new Date().toISOString(),foto:null};
+    chamados.unshift(ch);await sC(ch);
+    addVAMsg("system","✅ Chamado salvo com sucesso!");
+    showToast("✓ Chamado registrado!");
+  }else if(vaType==="ocorrencia"){
+    const now=new Date().toISOString().slice(0,16);
+    const o={id:Date.now(),bloco:vaData.bloco||"",apto:vaData.apto||"",dataOcorr:now,dataReg:now,categoria:vaData.categoria||"Outros",acao:vaData.acao||"Aviso WhatsApp",multa:null,desc:vaData.desc||"",nota:vaData.nota||"",foto:null,status:"Aberta",juridico:false,dataJuridico:null,criadoEm:new Date().toISOString()};
+    ocorrs.unshift(o);await sO(o);
+    addVAMsg("system","✅ Ocorrência registrada com sucesso!");
+    showToast("✓ Ocorrência registrada!");
+  }else if(vaType==="ideia"){
+    const novaIdeia={id:Date.now(),text:vaData.text||"",cat:"Outros",criadoEm:new Date().toISOString(),arch:false,ai:null};
+    ideias.unshift(novaIdeia);await sI(novaIdeia);
+    addVAMsg("system","✅ Ideia salva com sucesso!");
+    showToast("✓ Ideia salva!");
+  }
+
+  document.getElementById("vaActionsArea").style.display="none";
+  document.getElementById("vaReviewArea").style.display="none";
+  renderAll();
+
+  setTimeout(()=>{
+    addVAMsg("ai","Quer registrar mais alguma coisa? 😊");
+    document.getElementById("vaInputArea").style.display="flex";
+    vaStep=0;vaType=null;vaData={};
+  },1500);
+}
+
+// MIC
+function toggleMic(){
+  if(isListening){stopMic();}else{startMic();}
+}
+
+function startMic(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    showToast("Microfone não suportado neste navegador");return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang="pt-BR";
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    document.getElementById("vaInput").value=t;
+    stopMic();
+    sendVA();
+  };
+  recognition.onerror=()=>stopMic();
+  recognition.onend=()=>{isListening=false;updateMicBtn();};
+  recognition.start();
+  isListening=true;
+  updateMicBtn();
+}
+
+function stopMic(){if(recognition){recognition.stop();recognition=null;}isListening=false;updateMicBtn();}
+function updateMicBtn(){
+  const btn=document.getElementById("vaMic");
+  if(!btn)return;
+  btn.classList.toggle("active",isListening);
+  btn.textContent=isListening?"⏹️":"🎤";
+  btn.title=isListening?"Parar":"Falar";
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function init(){
+  setDefaultDates();
+  // Auto-login se tiver sessao salva
+  const saved = localStorage.getItem("m360session");
+  console.log("session saved:", saved);
+  if(saved){
+    try{
+      const s = JSON.parse(saved);
+      console.log("auto-login para:", s.username);
+      const resp = await fetch("https://ccjjmwpzrbbduccfcbjn.supabase.co/rest/v1/usuarios?username=eq."+s.username+"&ativo=eq.true",{headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjamptd3B6cmJiZHVjY2ZjYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTE2NjQsImV4cCI6MjA5NjM2NzY2NH0.L27Qt_a90qgloTWr6AIsHksI5anqrfOGzG1sI7Oj7lY"}});
+      const r = await resp.json();
+      console.log("usuarios result:", r);
+      if(r&&r.length>0){
+        const user=r[0];
+        CU={username:user.username,role:user.role,label:user.label,tabs:[],canCham:user.pode_abrir_chamado,canOcorr:user.role==="sindico",acesso_painel:user.acesso_painel,acesso_chamados:user.acesso_chamados,acesso_ocorrencias:user.acesso_ocorrencias,acesso_ideias:user.acesso_ideias};
+        if(user.acesso_painel)CU.tabs.push("dashboard");
+        if(user.acesso_chamados)CU.tabs.push("chamados");
+        if(user.acesso_ocorrencias)CU.tabs.push("ocorrencias");
+        if(user.acesso_ideias)CU.tabs.push("ideias");
+        if(user.role==="sindico")CU.tabs.push("admin");
+        if(!CU.tabs.length)CU.tabs.push("chamados");
+        document.getElementById("loginScreen").style.display="none";
+        document.getElementById("app").style.display="block";
+        document.getElementById("userBadge").textContent=CU.label;
+        applyRole();
+        console.log("carregando dados...");
+        await load();
+        console.log("dados carregados, chamados:", chamados.length);
+        setDefaultDates();
+        renderAll();
+      }else{console.error("usuario nao encontrado ou inativo");localStorage.removeItem("m360session");}
+    }catch(e){console.error("auto-login error:",e);localStorage.removeItem("m360session");}
+  }
+}
+init();
+</script>
+</body>
+</html>
